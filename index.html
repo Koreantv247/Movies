@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Series Player</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes slideIn {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-slide-in {
+      animation: slideIn 0.5s ease-out forwards;
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.7s ease-out forwards;
+    }
+    .active-card {
+      background-color: #4b5563 !important;
+      border: 2px solid #60a5fa;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center">
+  <div class="container mx-auto p-6">
+    <h1 class="text-4xl font-bold mb-8 text-center animate-fade-in">Movie Series Player</h1>
+    
+    <div class="mb-10 animate-fade-in">
+      <video id="mainVideo" class="w-full max-w-4xl mx-auto rounded-xl shadow-2xl transition-all duration-300" controls autoplay>
+        <source src="https://pagedone.io/asset/uploads/1705298724.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <h2 id="episodeTitle" class="text-2xl font-semibold mt-4 text-center transition-opacity duration-300">Episode 1</h2>
+    </div>
+
+    <div id="episodeContainer" class="flex overflow-x-auto space-x-4 pb-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-900 snap-x snap-mandatory"></div>
+  </div>
+
+  <script>
+    // JSON object for episodes
+    const episodes = [
+      {
+        id: 1,
+        title: "Episode 1",
+        videoSrc: "https://pagedone.io/asset/uploads/1705298724.mp4",
+        thumbnail: "https://images.pexels.com/photos/1117132/pexels-photo-1117132.jpeg"
+      },
+      {
+        id: 2,
+        title: "Episode 2",
+        videoSrc: "https://pagedone.io/asset/uploads/1705298724.mp4",
+        thumbnail: "https://images.pexels.com/photos/1366630/pexels-photo-1366630.jpeg"
+      },
+      {
+        id: 3,
+        title: "Episode 3",
+        videoSrc: "https://pagedone.io/asset/uploads/1705298724.mp4",
+        thumbnail: "https://images.pexels.com/photos/247599/pexels-photo-247599.jpeg"
+      }
+    ];
+
+    // Function to play episode
+    function playEpisode(videoSrc, title, element) {
+      const video = document.getElementById('mainVideo');
+      const titleElement = document.getElementById('episodeTitle');
+      video.src = videoSrc;
+      titleElement.textContent = title;
+      video.play();
+
+      // Remove active class from all cards
+      document.querySelectorAll('.episode-card').forEach(card => card.classList.remove('active-card'));
+      // Add active class to clicked card
+      element.classList.add('active-card');
+    }
+
+    // Function to render episode cards
+    function renderEpisodes() {
+      const container = document.getElementById('episodeContainer');
+      episodes.forEach((episode, index) => {
+        const card = document.createElement('div');
+        card.className = `episode-card bg-gray-800 p-3 rounded-lg cursor-pointer hover:bg-gray-700 hover:scale-105 transition-all duration-300 flex-shrink-0 w-40 snap-center animate-slide-in ${index === 0 ? 'active-card' : ''}`;
+        card.style.animationDelay = `${0.1 * (index + 1)}s`;
+        card.innerHTML = `
+          <img src="${episode.thumbnail}" alt="${episode.title} Thumbnail" class="w-full h-24 object-cover rounded-md mb-2 shadow-md">
+          <h3 class="text-sm font-medium text-center">${episode.title}</h3>
+        `;
+        card.onclick = () => playEpisode(episode.videoSrc, episode.title, card);
+        container.appendChild(card);
+      });
+    }
+
+    // Initialize
+    renderEpisodes();
+  </script>
+</body>
+</html>
